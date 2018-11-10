@@ -28,6 +28,7 @@ def getReply(text):
     global apicall
 
     if apicall > 39:
+        print("API LIMITED")
         sleep(60)
         return ""
     try:
