@@ -25,6 +25,8 @@ search = ['Dems', 'snowflake', 'GOP', 'trump', 'vote']
 apicall = 0
 
 def getReply(text):
+    global apicall
+
     if apicall > 39:
         sleep(60)
         return ""
@@ -79,7 +81,7 @@ class MyStreamListener(tweepy.StreamListener):
 myStreamListener = MyStreamListener()
 myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
-myStreamListener.filter(track=search, async_=True)
+myStreamListener.filter(track=search, async=True)
 
 def apiManager():
     global apicall
