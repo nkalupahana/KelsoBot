@@ -1,21 +1,22 @@
 import tweepy
-import dotenv
+from dotenv import load_dotenv
 from datetime import datetime
 from time import sleep
 import threading
 import random
+import os
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions
 
-dotenv.load()
+load_dotenv()
 
-auth = tweepy.OAuthHandler(dotenv.get('CONSUMER_KEY'), dotenv.get('CONSUMER_SECRET'))
-auth.set_access_token(dotenv.get('ACCESS_TOKEN'), dotenv.get('ACCESS_SECRET'))
+auth = tweepy.OAuthHandler(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'))
+auth.set_access_token(os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
 api = tweepy.API(auth)
 
 natural_language_understanding = NaturalLanguageUnderstandingV1(
     version='2018-11-01',
-    iam_apikey = dotenv.get('WAT_KEY'),
+    iam_apikey = os.getenv('WAT_KEY'),
     url = "https://gateway.watsonplatform.net/natural-language-understanding/api"
 )
 
