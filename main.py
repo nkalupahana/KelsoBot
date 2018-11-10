@@ -75,7 +75,7 @@ class MyStreamListener(tweepy.StreamListener):
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
 
-            myStreamListener.filter(track=search, async_=True)
+            myStreamListener.filter(track=search, async=True)
 
 
 myStreamListener = MyStreamListener()
