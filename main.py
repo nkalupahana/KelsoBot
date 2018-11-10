@@ -52,7 +52,7 @@ class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         kelsoChoices = ['making a deal', 'waiting and cooling off', 'going to another game', 'talking it out', 'sharing and taking turns', 'ignoring it', 'walking away', 'telling them to stop', 'apologizing']
         openings = ['Consider', 'Try', 'I\'d suggest', 'I\'d recommend', 'I\'d start thinking about']
-        start = ['Whoa!', 'Yikes!', 'Heck!']
+        start = ['Whoa!', 'Yikes!', 'Heck!', 'Dang!']
         conflictStatement = ['Don\'t get so angry at', 'It looks like you have a problem with', 'It looks like you have a conflict with', 'You\'re getting pretty mad at']
 
         if not status.retweeted and 'RT @' not in status.text and status.text.strip() not in check:
