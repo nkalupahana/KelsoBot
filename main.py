@@ -75,7 +75,8 @@ class MyStreamListener(tweepy.StreamListener):
                 print(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
-
+			
+            sleep(10)
             myStreamListener.filter(track=search, async=True)
 
 
@@ -95,6 +96,3 @@ def apiManager():
 t = threading.Thread(target=apiManager)
 t.daemon = True
 t.start()
-
-while True:
-    stayalive = True
