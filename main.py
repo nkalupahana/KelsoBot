@@ -75,15 +75,22 @@ class MyStreamListener(tweepy.StreamListener):
                 print(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
-			
-            sleep(10)
-            myStreamListener.filter(track=search, async=True)
 
+            sleep(10)
+            try:
+                myStreamListener.filter(track=search, async=True)
+            except:
+                sleep(180)
+                continue
 
 myStreamListener = MyStreamListener()
 myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
-myStreamListener.filter(track=search, async=True)
+try:
+    myStreamListener.filter(track=search, async=True)
+except:
+    sleep(180)
+    continue
 
 def apiManager():
     global apicall
