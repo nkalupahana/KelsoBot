@@ -80,8 +80,9 @@ class MyStreamListener(tweepy.StreamListener):
             try:
                 myStreamListener.filter(track=search, async=True)
             except:
+                print("TWEEPY LIMITED: Sleeping...")
                 sleep(180)
-                continue
+                pass
 
 myStreamListener = MyStreamListener()
 myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
@@ -89,8 +90,9 @@ myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 try:
     myStreamListener.filter(track=search, async=True)
 except:
+    print("TWEEPY LIMITED: Sleeping...")
     sleep(180)
-    continue
+    pass
 
 def apiManager():
     global apicall
