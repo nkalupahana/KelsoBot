@@ -5,6 +5,7 @@ from time import sleep
 import threading
 import random
 import os
+import re
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions
 
@@ -52,6 +53,11 @@ def getReply(text):
 class MyStreamListener(tweepy.StreamListener):
     global myStreamListener
     global search
+    global check
+
+    def on_error(self, status_code):
+        print("ERROR " + status_code)
+        return True
 
     def on_status(self, status):
         kelsoChoices = ['making a deal', 'waiting and cooling off', 'going to another game', 'talking it out', 'sharing and taking turns', 'ignoring it', 'walking away', 'telling them to stop', 'apologizing']
@@ -72,35 +78,35 @@ class MyStreamListener(tweepy.StreamListener):
                     r2 = random.choice(kelsoChoices)
 
                 reply = "@{} {} {} {}! {} {} or {}. #kelsowheel".format(status.user.screen_name, random.choice(start), random.choice(conflictStatement), reply, random.choice(openings), r1, r2)
+                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', reply)
+                if len(urls) > 0:
+                    sleep(300)
+                    return
+
                 print(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
 
-            sleep(10)
-            try:
-                myStreamListener.filter(track=search, async=True)
-            except:
-                print("TWEEPY LIMITED: Sleeping...")
-                sleep(180)
-                pass
+            myStreamListener.filter(track=search, async=True)
 
 myStreamListener = MyStreamListener()
 myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
-try:
-    myStreamListener.filter(track=search, async=True)
-except:
-    print("TWEEPY LIMITED: Sleeping...")
-    sleep(180)
-    pass
+myStreamListener.filter(track=search, async=True)
 
 def apiManager():
     global apicall
-    hour = datetime.now()
+    global check
 
-    if hour is not datetime.now().hour:
-        apicall = 0
-        hour = datetime.now().hour
+    while True:
+        hour = datetime.now()
+
+        if hour is not datetime.now().hour:
+            apicall = 0
+            check = []
+            hour = datetime.now().hour
+
+        sleep(60)
 
 t = threading.Thread(target=apiManager)
 t.daemon = True
