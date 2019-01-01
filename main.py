@@ -1,11 +1,8 @@
+import os, sys, re, random, threading
 import tweepy
 from dotenv import load_dotenv
 from datetime import datetime
 from time import sleep
-import threading
-import random
-import os
-import re
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions
 
@@ -33,9 +30,7 @@ def getReply(text):
     if apicall > 39:
         print("API LIMITED")
         myStreamListener.disconnect()
-        sleep(120)
-        myStreamListener.filter(track=search, async=True)
-        return ""
+        sys.exit()
     try:
         apicall += 2
         response = natural_language_understanding.analyze(
@@ -106,21 +101,3 @@ except:
     myStreamListener.filter(track=search, async=True)
 
 myStreamListener.filter(track=search, async=True)
-
-def apiManager():
-    global apicall
-    global check
-
-    while True:
-        hour = datetime.now()
-
-        if hour is not datetime.now().hour:
-            apicall = 0
-            check = []
-            hour = datetime.now().hour
-
-        sleep(120)
-
-t = threading.Thread(target=apiManager)
-t.daemon = True
-t.start()
