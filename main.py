@@ -56,7 +56,7 @@ class MyStreamListener(tweepy.StreamListener):
     global check
 
     def on_error(self, status_code):
-        print("ERROR " + status_code)
+        print("ERROR " + str(status_code))
         return True
 
     def on_status(self, status):
@@ -90,7 +90,16 @@ class MyStreamListener(tweepy.StreamListener):
             myStreamListener.filter(track=search, async=True)
 
 myStreamListener = MyStreamListener()
-myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
+try:
+    myStreamListener = tweepy.Stream(auth = api.auth, listener=myStreamListener)
+except:
+    try:
+        myStreamListener.disconnect()
+    except:
+        pass
+
+    sleep(300)
+    myStreamListener.filter(track=search, async=True)
 
 myStreamListener.filter(track=search, async=True)
 
