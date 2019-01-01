@@ -27,10 +27,14 @@ apicall = 0
 
 def getReply(text):
     global apicall
+    global myStreamListener
+
 
     if apicall > 39:
         print("API LIMITED")
-        sleep(60)
+        myStreamListener.disconnect()
+        sleep(120)
+        myStreamListener.filter(track=search, async=True)
         return ""
     try:
         apicall += 2
@@ -115,7 +119,7 @@ def apiManager():
             check = []
             hour = datetime.now().hour
 
-        sleep(60)
+        sleep(120)
 
 t = threading.Thread(target=apiManager)
 t.daemon = True
