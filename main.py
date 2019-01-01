@@ -44,7 +44,7 @@ def getReply(text):
     if len(response['entities']):
         # if there is a strong anger in the text
         for obj in response['entities']:
-            if obj['sentiment']['score'] < -0.3:
+            if obj['sentiment']['score'] < -0.4:
                 return obj['text'].strip()
 
     return ""
