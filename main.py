@@ -19,7 +19,7 @@ natural_language_understanding = NaturalLanguageUnderstandingV1(
 )
 
 check = []
-search = ['Dems', 'snowflake', 'GOP', 'trump', 'vote']
+search = ['Dems', 'snowflake', 'GOP', 'trump', 'shutdown'] # last keyword is time-based
 apicall = 0
 
 def getReply(text):
