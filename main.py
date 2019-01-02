@@ -6,10 +6,6 @@ from time import sleep
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions
 
-def log(line):
-    with open('/root/KelsoBot/log.txt', 'a') as file:
-        file.write(line + '\n')
-
 load_dotenv()
 
 auth = tweepy.OAuthHandler(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'))
@@ -32,7 +28,7 @@ def getReply(text):
     global natural_language_understanding
 
     if 39 < apicall < 80:
-        log("SWITCHING TO WATSON KEY 2")
+        print("SWITCHING TO WATSON KEY 2")
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             version='2018-11-01',
             iam_apikey = os.getenv('WAT_KEY_2'),
@@ -40,7 +36,7 @@ def getReply(text):
         )
 
     if 79 < apicall < 120:
-        log("SWITCHING TO WATSON KEY 3")
+        print("SWITCHING TO WATSON KEY 3")
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             version='2018-11-01',
             iam_apikey = os.getenv('WAT_KEY_3'),
@@ -48,8 +44,8 @@ def getReply(text):
         )
 
     if apicall > 119:
-        log("API LIMITED, SHUTTING DOWN")
-        log("--------------------------")
+        print("API LIMITED, SHUTTING DOWN")
+        print("--------------------------")
         myStreamListener.disconnect()
         sys.exit()
 
@@ -59,7 +55,7 @@ def getReply(text):
         text=text,
         features=Features(entities=EntitiesOptions(sentiment=True))).get_result()
     except:
-        log("Watson had trouble analyzing (1) : {}".format(text))
+        print("Watson had trouble analyzing (1) : {}".format(text))
         return ""
 
     scores = [[], [], 0, 0]
@@ -89,11 +85,11 @@ class MyStreamListener(tweepy.StreamListener):
     global check
 
     def on_error(self, status_code):
-        log("TWITTER ERROR " + str(status_code))
+        print("TWITTER ERROR " + str(status_code))
         return True
 
     def on_status(self, status):
-        kelsoChoices = ['making a deal', 'waiting and cooling off', 'going to another game', 'talking it out', 'sharing and taking turns', 'ignoring it', 'walking away', 'telling them to stop', 'apologizing']
+        kelsoChoices = ['making a deal', 'waiting and cooling off', 'going to another game', 'talking it out', 'sharing and taking turns', 'ignoring it', 'walking away', 'telling them to stop', 'apoprintizing']
         openings = ['Consider', 'Try', 'I\'d suggest', 'I\'d recommend', 'I\'d start thinking about']
         start = ['Whoa!', 'Yikes!', 'Heck!', 'Dang!']
         conflictStatement = ['Don\'t get so angry at', 'It looks like you have a problem with', 'It looks like you have a conflict with', 'You\'re getting pretty mad at']
@@ -101,7 +97,7 @@ class MyStreamListener(tweepy.StreamListener):
         if not status.retweeted and 'RT @' not in status.text and status.text.strip() not in check:
             myStreamListener.disconnect()
             check.append(status.text.strip())
-            log(status.text.strip())
+            print(status.text.strip())
             reply = getReply(status.text.strip())
             if len(reply):
                 r1 = ""
@@ -120,8 +116,8 @@ class MyStreamListener(tweepy.StreamListener):
                     sleep(300)
                     return
 
-                log(status.text)
-                log(reply)
+                print(status.text)
+                print(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
 
@@ -139,5 +135,5 @@ except:
     sleep(300)
     myStreamListener.filter(track=search, async=True)
 
-log(datetime.now().strftime("%H:%M %D"))
+print(datetime.now().strftime("%H:%M %D"))
 myStreamListener.filter(track=search, async=True)
