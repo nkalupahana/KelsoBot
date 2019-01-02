@@ -100,6 +100,10 @@ class MyStreamListener(tweepy.StreamListener):
                     sleep(300)
                     return
 
+                if "@" in reply:
+                    sleep(300)
+                    return
+
                 print(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
