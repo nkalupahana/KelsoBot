@@ -64,9 +64,12 @@ def getReply(text):
     if len(response['entities']):
         # if there is a strong anger in the text
         for index, obj in enumerate(response['entities']):
+            print(obj['sentiment']['score'])
             if obj['sentiment']['score'] < -0.5:
                 scores[0].append(obj['sentiment']['score'])
                 scores[1].append(index)
+
+    print(scores)
 
     # find angriest part
     if len(scores[0]):
@@ -75,6 +78,8 @@ def getReply(text):
                 scores[3] = scores[1][index]
                 scores[2] = item
 
+        print(scores)
+        print(response['entities'][scores[3]]['text'].strip())
         return response['entities'][scores[3]]['text'].strip()
 
     return ""
@@ -99,7 +104,8 @@ class MyStreamListener(tweepy.StreamListener):
             check.append(status.text.strip())
             print(status.text.strip())
             reply = getReply(status.text.strip())
-            if len(reply):
+
+            if len(reply) and "@" not in reply:
                 r1 = ""
                 r2 = ""
                 while r1 == r2:
@@ -109,10 +115,6 @@ class MyStreamListener(tweepy.StreamListener):
                 reply = "@{} {} {} {}! {} {} or {}. #kelsowheel".format(status.user.screen_name, random.choice(start), random.choice(conflictStatement), reply, random.choice(openings), r1, r2)
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', reply)
                 if len(urls) > 0:
-                    sleep(300)
-                    return
-
-                if "@" in reply:
                     sleep(300)
                     return
 
