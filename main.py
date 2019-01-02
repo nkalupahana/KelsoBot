@@ -73,12 +73,15 @@ def getReply(text):
                 scores[1].append(index)
 
     # find angriest part
-    for index, item in enumerate(scores[0]):
-        if item < scores[2]:
-            scores[3] = scores[1][index]
-            scores[2] = item
+    if len(scores[0]):
+        for index, item in enumerate(scores[0]):
+            if item < scores[2]:
+                scores[3] = scores[1][index]
+                scores[2] = item
 
-    return response['entities'][scores[3]]['text'].strip()
+        return response['entities'][scores[3]]['text'].strip()
+
+    return ""
 
 class MyStreamListener(tweepy.StreamListener):
     global myStreamListener
