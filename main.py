@@ -101,6 +101,7 @@ class MyStreamListener(tweepy.StreamListener):
         if not status.retweeted and 'RT @' not in status.text and status.text.strip() not in check:
             myStreamListener.disconnect()
             check.append(status.text.strip())
+            log(status.text.strip())
             reply = getReply(status.text.strip())
             if len(reply):
                 r1 = ""
