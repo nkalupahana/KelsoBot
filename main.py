@@ -6,6 +6,10 @@ from time import sleep
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions
 
+def log(line):
+    with open('/root/KelsoBot/log.txt', 'a') as file:
+        file.write(line + '\n')
+
 load_dotenv()
 
 auth = tweepy.OAuthHandler(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'))
@@ -27,16 +31,25 @@ def getReply(text):
     global myStreamListener
     global natural_language_understanding
 
-    if 39 < apicall < 79:
-        print("SWITCHING WATSON KEY")
+    if 39 < apicall < 80:
+        log("SWITCHING TO WATSON KEY 2")
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             version='2018-11-01',
             iam_apikey = os.getenv('WAT_KEY_2'),
             url = "https://gateway.watsonplatform.net/natural-language-understanding/api"
         )
 
-    if apicall > 78:
-        print("API LIMITED")
+    if 79 < apicall < 120:
+        log("SWITCHING TO WATSON KEY 3")
+        natural_language_understanding = NaturalLanguageUnderstandingV1(
+            version='2018-11-01',
+            iam_apikey = os.getenv('WAT_KEY_3'),
+            url = "https://gateway.watsonplatform.net/natural-language-understanding/api"
+        )
+
+    if apicall > 119
+        log("API LIMITED, SHUTTING DOWN")
+        log("--------------------------")
         myStreamListener.disconnect()
         sys.exit()
 
@@ -46,7 +59,7 @@ def getReply(text):
         text=text,
         features=Features(entities=EntitiesOptions(sentiment=True))).get_result()
     except:
-        print("Watson had trouble analyzing (1) : {}".format(text))
+        log("Watson had trouble analyzing (1) : {}".format(text))
         return ""
 
     scores = [[], [], 0, 0]
@@ -73,7 +86,7 @@ class MyStreamListener(tweepy.StreamListener):
     global check
 
     def on_error(self, status_code):
-        print("ERROR " + str(status_code))
+        log("TWITTER ERROR " + str(status_code))
         return True
 
     def on_status(self, status):
@@ -84,7 +97,6 @@ class MyStreamListener(tweepy.StreamListener):
 
         if not status.retweeted and 'RT @' not in status.text and status.text.strip() not in check:
             myStreamListener.disconnect()
-            print(status.text)
             check.append(status.text.strip())
             reply = getReply(status.text.strip())
             if len(reply):
@@ -104,7 +116,8 @@ class MyStreamListener(tweepy.StreamListener):
                     sleep(300)
                     return
 
-                print(reply)
+                log(status.text)
+                log(reply)
                 api.update_status(status=reply, in_reply_to_status_id=status.id_str)
                 sleep(300)
 
@@ -122,4 +135,5 @@ except:
     sleep(300)
     myStreamListener.filter(track=search, async=True)
 
+log(datetime.now().strftime("%H:%M %D"))
 myStreamListener.filter(track=search, async=True)
