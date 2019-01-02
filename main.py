@@ -47,7 +47,7 @@ def getReply(text):
             url = "https://gateway.watsonplatform.net/natural-language-understanding/api"
         )
 
-    if apicall > 119
+    if apicall > 119:
         log("API LIMITED, SHUTTING DOWN")
         log("--------------------------")
         myStreamListener.disconnect()
