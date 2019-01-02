@@ -25,12 +25,21 @@ apicall = 0
 def getReply(text):
     global apicall
     global myStreamListener
+    global natural_language_understanding
 
+    if 39 < apicall < 79:
+        print("SWITCHING WATSON KEY")
+        natural_language_understanding = NaturalLanguageUnderstandingV1(
+            version='2018-11-01',
+            iam_apikey = os.getenv('WAT_KEY_2'),
+            url = "https://gateway.watsonplatform.net/natural-language-understanding/api"
+        )
 
-    if apicall > 39:
+    if apicall > 78:
         print("API LIMITED")
         myStreamListener.disconnect()
         sys.exit()
+
     try:
         apicall += 2
         response = natural_language_understanding.analyze(
@@ -40,14 +49,23 @@ def getReply(text):
         print("Watson had trouble analyzing (1) : {}".format(text))
         return ""
 
+    scores = [[], [], 0, 0]
+
     # if we found keywords in the text
     if len(response['entities']):
         # if there is a strong anger in the text
-        for obj in response['entities']:
-            if obj['sentiment']['score'] < -0.4:
-                return obj['text'].strip()
+        for index, obj in enumerate(response['entities']):
+            if obj['sentiment']['score'] < -0.5:
+                scores[0].append(obj['sentiment']['score'])
+                scores[1].append(index)
 
-    return ""
+    # find angriest part
+    for index, item in enumerate(scores[0]):
+        if item < scores[2]:
+            scores[3] = scores[1][index]
+            scores[2] = item
+
+    return response['entities'][scores[3]]['text'].strip()
 
 class MyStreamListener(tweepy.StreamListener):
     global myStreamListener
